@@ -63,31 +63,81 @@ public class agent
 		processInputFile();
 		createPositionalWeight();
 		integerToCharMapCreater();
-		charToIntegerMapCreater();
+		charToIntegerMapCreater();		
 		
-		// int x =minmax();
-		alphabeta();
-		minmaxOutput();
-		
-		
-		//UNCOMMENT WHEN DONE
-		/*switch(task)
+		switch(task)
 		{
 			case 1:
 				greedy();
 				break;
 			case 2:
+				outputLog = "Node,Depth,Value\n";
 				minmax();
-				minmaxOutput();
 				break;
 			case 3:
+				outputLog = "Node,Depth,Value,Alpha,Beta\n";
 				alphabeta();
 				break;
 		}
-		 */
+		
+		WriteOutput();
+		
 
 
 		
+	}
+	
+	static void WriteOutput() throws FileNotFoundException, UnsupportedEncodingException
+	{
+		PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
+		if(noChange == 1)
+		{
+			for(int indexI = 0; indexI < 8 ; indexI++)
+			{
+				for(int indexJ = 0; indexJ < 8 ; indexJ++)
+				{
+					writer.print(inputStateofBoard[indexI][indexJ]);
+				}
+				
+					writer.println();
+			}
+		}
+		else
+		{
+			if(finalMoveMinMax == null)
+			{
+				for(int indexI = 0; indexI < 8 ; indexI++)
+				{
+					for(int indexJ = 0; indexJ < 8 ; indexJ++)
+					{
+						writer.print(inputStateofBoard[indexI][indexJ]);
+					}
+					
+						writer.println();
+				}
+			}
+			else
+			{
+				char[] charArrayFinal = finalMoveMinMax.toCharArray();
+				int j = charToIntMap.get(charArrayFinal[0]);
+				int i = (Character.getNumericValue(charArrayFinal[1])) - 1;
+				finalState = flip(inputStateofBoard,i,j,initialPlayer,initialOpponent);
+				for(int indexI = 0; indexI < 8 ; indexI++)
+				{
+					for(int indexJ = 0; indexJ < 8 ; indexJ++)
+					{
+						writer.print(finalState[indexI][indexJ]);
+					}
+					//if(indexI != 7)
+						writer.println();
+				}
+			}
+			
+		}
+		outputLog = outputLog.substring(0, outputLog.length()-1); 
+		writer.print(outputLog);
+	
+		writer.close();
 	}
 
 	/*Task 1*/
@@ -139,9 +189,9 @@ public class agent
 			{
 				for(int y = 0; y < 8; y++)
 				{
-					System.out.print(finalBoardState[x][y]);
+					//System.out.print(finalBoardState[x][y]);
 				}
-				System.out.println();
+				//System.out.println();
 			}
 		}
 		
@@ -195,7 +245,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = board.name + ","+ board.depth + "," + value + "\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
 		
@@ -205,7 +255,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			return board.value;
 		}
@@ -224,11 +274,11 @@ public class agent
 				//pass.value = Integer.MIN_VALUE;
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -240,11 +290,11 @@ public class agent
 				//pass.parent = board;
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 			if(board.passValue == 2)
@@ -252,7 +302,7 @@ public class agent
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 		}
@@ -261,7 +311,7 @@ public class agent
 			int initialValue = board.value;
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			/*log for board comes here*/
 			for(String move:moves)
 			{
@@ -282,7 +332,7 @@ public class agent
 				}
 					value = getValue(board.value);
 					outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-					System.out.println(board.name + ","+ board.depth + "," + value);
+					//System.out.println(board.name + ","+ board.depth + "," + value);
 					initialValue = board.value;
 
 			}
@@ -305,7 +355,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
 		if(gameEndCheck(board.boardState) == 1)
@@ -314,7 +364,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value );
+			//System.out.println(board.name + ","+ board.depth + "," + value );
 			return board.value;
 		}
 		ArrayList<String> moves = new ArrayList<String>();
@@ -332,11 +382,11 @@ public class agent
 				
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.min(board.value, max(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -349,11 +399,11 @@ public class agent
 				
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.min(board.value, max(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 				
 			}
@@ -363,7 +413,7 @@ public class agent
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 		}
@@ -372,7 +422,7 @@ public class agent
 			
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			for(String move:moves)
 			{
@@ -390,7 +440,7 @@ public class agent
 			
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				
 				
 			}
@@ -411,7 +461,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
 		
@@ -420,7 +470,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
 		ArrayList<String> moves = new ArrayList<String>();
@@ -437,11 +487,11 @@ public class agent
 				
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				////System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -453,11 +503,11 @@ public class agent
 			
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 			if(board.passValue == 2)
@@ -466,7 +516,7 @@ public class agent
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 		}
@@ -475,7 +525,7 @@ public class agent
 			
 			String value = getValue(board.value);
 			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-			System.out.println(board.name + ","+ board.depth + "," + value);
+			//System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			for(String move:moves)
 			{
@@ -493,7 +543,7 @@ public class agent
 			
 				value = getValue(board.value);
 				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
-				System.out.println(board.name + ","+ board.depth + "," + value);
+				//System.out.println(board.name + ","+ board.depth + "," + value);
 				
 				
 			}
@@ -512,10 +562,10 @@ public class agent
 			{
 				for(int indexJ = 0; indexJ < 8 ; indexJ++)
 				{
-					System.out.print(inputStateofBoard[indexI][indexJ]);
+					//System.out.print(inputStateofBoard[indexI][indexJ]);
 				}
-				if(indexI != 7)
-					System.out.println();
+				//if(indexI != 7)
+					//System.out.println();
 			}
 		}
 		else
@@ -526,10 +576,10 @@ public class agent
 				{
 					for(int indexJ = 0; indexJ < 8 ; indexJ++)
 					{
-						System.out.print(inputStateofBoard[indexI][indexJ]);
+						//System.out.print(inputStateofBoard[indexI][indexJ]);
 					}
-					if(indexI != 7)
-						System.out.println();
+					//if(indexI != 7)
+						//System.out.println();
 				}
 			}
 			else
@@ -542,10 +592,10 @@ public class agent
 				{
 					for(int indexJ = 0; indexJ < 8 ; indexJ++)
 					{
-						System.out.print(finalState[indexI][indexJ]);
+						//System.out.print(finalState[indexI][indexJ]);
 					}
-					if(indexI != 7)
-						System.out.println();
+					//if(indexI != 7)
+						//System.out.println();
 				}
 			}
 			
@@ -575,7 +625,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog = board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
 		
@@ -585,7 +635,7 @@ public class agent
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
 			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
 			return board.value;
 		}
@@ -604,17 +654,19 @@ public class agent
 				
 				String value = getValue(board.value);
 				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass, opponent, player, alpha, beta));
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -625,24 +677,28 @@ public class agent
 				pass.passValue = board.passValue + 1;
 				
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass, opponent, player, alpha, beta));
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 			if(board.passValue == 2)
 			{
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 		}
@@ -650,7 +706,8 @@ public class agent
 		{
 			int initialValue = board.value;
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
 			for(String move:moves)
 			{
@@ -672,12 +729,14 @@ public class agent
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				initialValue = board.value;
 
 			}
@@ -699,14 +758,16 @@ public class agent
 			
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
 		if(gameEndCheck(board.boardState) == 1)
 		{
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
 		ArrayList<String> moves = new ArrayList<String>();
@@ -723,18 +784,21 @@ public class agent
 				pass.passValue = 1;
 				
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.min(board.value, maxalpha(pass,opponent,player,alpha,beta));
 				if(board.value <= alpha)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					
 					return board.value;
 				}
 				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -746,18 +810,21 @@ public class agent
 				
 				
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.min(board.value, maxalpha(pass,opponent,player,alpha,beta));
 				if(board.value <= alpha)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					
 					return board.value;
 				}
 				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 				
 			}
@@ -765,7 +832,8 @@ public class agent
 			{
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 		}
@@ -773,7 +841,8 @@ public class agent
 		{
 			
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
 			for(String move:moves)
 			{
@@ -791,13 +860,15 @@ public class agent
 				if(board.value <= alpha)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					
 					return board.value;
 				}
 				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				
 			}
 			
@@ -816,7 +887,8 @@ public class agent
 			
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
 		
@@ -824,7 +896,8 @@ public class agent
 		{
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
 		ArrayList<String> moves = new ArrayList<String>();
@@ -840,17 +913,20 @@ public class agent
 				pass.passValue = 1;
 				
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass,opponent,player,alpha,beta));
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 			if(board.passValue == 1)
@@ -861,24 +937,28 @@ public class agent
 				pass.passValue = board.passValue + 1;
 				
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass,opponent,player,alpha,beta));
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 			if(board.passValue == 2)
 			{
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
 			}
 		}
@@ -886,7 +966,8 @@ public class agent
 		{
 			
 			String value = getValue(board.value);
-			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+			//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
 			for(String move:moves)
 			{
@@ -904,13 +985,15 @@ public class agent
 				if(board.value >= beta)
 				{
 					value = getValue(board.value);
-					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+					//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 					return board.value;
 				}
 				alpha = Math.max(alpha, board.value);
 				
 				value = getValue(board.value);
-				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
+				//System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				
 				
 			}
