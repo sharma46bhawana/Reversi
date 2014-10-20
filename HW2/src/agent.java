@@ -10,13 +10,9 @@ class node
 {
 	int value;
 	char[][] boardState = new char[8][8];
-	int alpha, beta;
 	int depth;
-	node parent;
 	int passValue = 0; 
 	String name;
-	String moveUsed;
-	//ArrayList<node> children = new ArrayList<node>();
 	
 	node(char[][] state)
 	{
@@ -49,6 +45,7 @@ class node
 public class agent
 {
 	static int noChange = 0;
+	static String outputLog = null;
 	static char[][] finalState = new char[8][8];
 	static String finalMoveMinMax = null;
 	static int task;
@@ -67,12 +64,12 @@ public class agent
 		createPositionalWeight();
 		integerToCharMapCreater();
 		charToIntegerMapCreater();
-		//greedy();
+		
 		// int x =minmax();
 		alphabeta();
-		 minmaxOutput();
-		//greedyOutput();
-		//System.out.println(charToIntMap.get('h'));
+		minmaxOutput();
+		
+		
 		//UNCOMMENT WHEN DONE
 		/*switch(task)
 		{
@@ -90,18 +87,7 @@ public class agent
 		 */
 
 
-		/*System.out.println("Task: "+ task);
-		System.out.println("Player: "+ player);
-		System.out.println("cutoffDepth: "+ cutoffDepth);
-		int i,j;
-		for (i = 0; i < 8; i++)
-		{
-			for(j = 0; j < 8; j++)
-			{
-				System.out.print(inputStateofBoard[i][j]);
-			}
-			System.out.println();
-		}*/
+		
 	}
 
 	/*Task 1*/
@@ -196,7 +182,7 @@ public class agent
 		
 		node board = new node(inputStateofBoard,Integer.MIN_VALUE);
 		board.depth = 0;
-		board.parent = null;
+		//board.parent = null;
 		board.value = Integer.MIN_VALUE;
 		board.name = "root";
 		//max(root,initialPlayer,initialOpponent);
@@ -208,6 +194,7 @@ public class agent
 			noChange = 1;
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = board.name + ","+ board.depth + "," + value + "\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
@@ -217,6 +204,7 @@ public class agent
 			noChange = 1;
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			return board.value;
@@ -231,13 +219,15 @@ public class agent
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				//pass.parent = board;
 				pass.passValue = 1;
 				//pass.value = Integer.MIN_VALUE;
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -247,11 +237,13 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+				//pass.parent = board;
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -259,6 +251,7 @@ public class agent
 			{
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -267,13 +260,14 @@ public class agent
 		{
 			int initialValue = board.value;
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			/*log for board comes here*/
 			for(String move:moves)
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				//newnode.parent = board;
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -287,6 +281,7 @@ public class agent
 					finalMoveMinMax = move;
 				}
 					value = getValue(board.value);
+					outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 					System.out.println(board.name + ","+ board.depth + "," + value);
 					initialValue = board.value;
 
@@ -309,6 +304,7 @@ public class agent
 			
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
@@ -317,6 +313,7 @@ public class agent
 			
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value );
 			return board.value;
 		}
@@ -330,13 +327,15 @@ public class agent
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				
 				pass.passValue = 1;
 				
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.min(board.value, max(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -346,12 +345,14 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+				
 				
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.min(board.value, max(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 				
@@ -361,21 +362,23 @@ public class agent
 				
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 		}
 		else
 		{
-			int initialValue = board.value;
+			
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			for(String move:moves)
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -386,8 +389,9 @@ public class agent
 				board.value = Math.min(board.value, max(newnode,opponent,player));
 			
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
-				initialValue = board.value;
+				
 				
 			}
 			
@@ -406,6 +410,7 @@ public class agent
 			
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
@@ -414,6 +419,7 @@ public class agent
 		{
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			return board.value;
 		}
@@ -426,13 +432,15 @@ public class agent
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				
 				pass.passValue = 1;
 				
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -442,11 +450,13 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+			
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				board.value = Math.max(board.value, min(pass,opponent,player));
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
@@ -455,21 +465,23 @@ public class agent
 				
 				board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 				String value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
 				return board.value;
 			}
 		}
 		else
 		{
-			int initialValue = board.value;
+			
 			String value = getValue(board.value);
+			outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 			System.out.println(board.name + ","+ board.depth + "," + value);
 			
 			for(String move:moves)
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -480,8 +492,9 @@ public class agent
 				board.value = Math.max(board.value, min(newnode,opponent,player));
 			
 				value = getValue(board.value);
+				outputLog = outputLog + board.name + ","+ board.depth + "," + value +"\n";
 				System.out.println(board.name + ","+ board.depth + "," + value);
-				initialValue = board.value;
+				
 				
 			}
 			
@@ -547,12 +560,12 @@ public class agent
 		
 		node board = new node(inputStateofBoard,Integer.MIN_VALUE);
 		board.depth = 0;
-		board.parent = null;
+		
 		board.value = Integer.MIN_VALUE;
 		board.name = "root";
 		int alpha = Integer.MIN_VALUE;
 		int beta = Integer.MAX_VALUE;
-		//max(root,initialPlayer,initialOpponent);
+		
 		char player = initialPlayer;
 		char opponent = initialOpponent;
 		board.value = Integer.MIN_VALUE;
@@ -561,6 +574,7 @@ public class agent
 			noChange = 1;
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog = board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
 			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			return board.value;
 		}
@@ -570,6 +584,7 @@ public class agent
 			noChange = 1;
 			board.value = evaluate(board.boardState,initialPlayer,initialOpponent);
 			String value = getValue(board.value);
+			outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
 			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
 			return board.value;
@@ -580,16 +595,24 @@ public class agent
 		{
 			if(board.passValue == 0)
 			{
-				//noChange = 1;
+				
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				
 				pass.passValue = 1;
-				//pass.value = Integer.MIN_VALUE;
+				
 				String value = getValue(board.value);
+				outputLog =outputLog + board.name + ","+ board.depth + "," + value +"," + getValue(alpha) + "," + getValue(beta) + "\n";
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass, opponent, player, alpha, beta));
+				if(board.value >= beta)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					return board.value;
+				}
+				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -600,10 +623,17 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+				
 				String value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass, opponent, player, alpha, beta));
+				if(board.value >= beta)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					return board.value;
+				}
+				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -626,7 +656,7 @@ public class agent
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -651,7 +681,7 @@ public class agent
 				initialValue = board.value;
 
 			}
-			//return board.value;
+		
 			
 			
 		}
@@ -689,12 +719,20 @@ public class agent
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				
 				pass.passValue = 1;
 				
 				String value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.min(board.value, maxalpha(pass,opponent,player,alpha,beta));
+				if(board.value <= alpha)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					
+					return board.value;
+				}
+				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -705,11 +743,19 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+				
 				
 				String value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.min(board.value, maxalpha(pass,opponent,player,alpha,beta));
+				if(board.value <= alpha)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					
+					return board.value;
+				}
+				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -725,7 +771,7 @@ public class agent
 		}
 		else
 		{
-			int initialValue = board.value;
+			
 			String value = getValue(board.value);
 			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
@@ -733,7 +779,7 @@ public class agent
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -746,13 +792,13 @@ public class agent
 				{
 					value = getValue(board.value);
 					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
-					initialValue = board.value;
+					
 					return board.value;
 				}
 				beta = Math.min(beta, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
-				initialValue = board.value;
+				
 			}
 			
 			return board.value;
@@ -790,12 +836,19 @@ public class agent
 				node pass = new node(board.boardState);
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
-				pass.parent = board;
+				
 				pass.passValue = 1;
-				//pass.value = Integer.MIN_VALUE;
+				
 				String value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass,opponent,player,alpha,beta));
+				if(board.value >= beta)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					return board.value;
+				}
+				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -806,10 +859,17 @@ public class agent
 				pass.depth = board.depth + 1;
 				pass.name = "pass";
 				pass.passValue = board.passValue + 1;
-				pass.parent = board;
+				
 				String value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				board.value = Math.max(board.value, minalpha(pass,opponent,player,alpha,beta));
+				if(board.value >= beta)
+				{
+					value = getValue(board.value);
+					System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
+					return board.value;
+				}
+				alpha = Math.max(alpha, board.value);
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 				return board.value;
@@ -824,7 +884,7 @@ public class agent
 		}
 		else
 		{
-			int initialValue = board.value;
+			
 			String value = getValue(board.value);
 			System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
 			
@@ -832,7 +892,7 @@ public class agent
 			{
 				
 				node newnode = new node();
-				newnode.parent = board;
+				
 				newnode.depth = board.depth + 1;
 				newnode.name = move;
 				char[] charArrayFinal = move.toCharArray();
@@ -851,7 +911,7 @@ public class agent
 				
 				value = getValue(board.value);
 				System.out.println(board.name + ","+ board.depth + "," + value + "," + getValue(alpha) + "," + getValue(beta));
-				initialValue = board.value;
+				
 				
 			}
 			
@@ -1215,7 +1275,6 @@ public class agent
 	static void charToIntegerMapCreater()
 	{
 		int i=0;
-		int j=97;
 		char c = 'a';
 		while(i<8)
 		{
